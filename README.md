@@ -5,15 +5,26 @@ Refonte du site institutionnel CardinalTech — Cybersécurité & Infrastructure
 ## Démarrage
 
 ```powershell
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
+
+## Architecture
+
+Le site repose sur une base volontairement légère, sans framework côté client :
+
+- `index.html` fournit le document HTML et le point de montage de l’application ;
+- `src/main.js` contient le routeur, les gabarits réutilisables et les interactions en JavaScript natif ;
+- `src/styles.css` centralise les styles, les variantes responsives et les animations ;
+- `src/data/content.js` regroupe les contenus structurés afin d’éviter les répétitions entre les pages.
+
+Les icônes Lucide sont importées individuellement et Vite assure le serveur de développement ainsi que l’optimisation de production.
 
 ## Vérification de production
 
 ```powershell
-npm run build
-npm run preview
+pnpm build
+pnpm preview
 ```
 
 La commande complète de contrôle est :

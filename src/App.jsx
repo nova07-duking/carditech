@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import {
-  ArrowLeft, ArrowRight, Check, ChevronDown, ChevronRight, Clock3, Crosshair, Mail, MapPin,
+  ArrowRight, Check, ChevronDown, ChevronRight, Clock3, Crosshair, Mail, MapPin,
   Phone, Quote, ShieldCheck, Sparkles, Target, UsersRound,
 } from 'lucide-react'
 import { CTA, Layout, PageHero } from './components/Layout'
+import { legalDocuments } from './config/site'
 import { articles, cases, pillars, processSteps, sectors, teamRoles } from './data/content'
 
 function PillarCards({ detailed = false }) {
@@ -73,7 +74,7 @@ function Home() {
 
     <section className="industry-showcase" data-reveal><div className="industry-copy"><p className="eyebrow">Secteurs critiques</p><h2>Protéger les organisations qui font avancer le pays.</h2><p>PME. Administrations. Banques. Infrastructures. Les contextes changent, l’exigence de continuité reste la même.</p><Link className="button" to="/secteurs">Explorer les secteurs <ArrowRight/></Link></div><div className="industry-list">{sectors.map(({ title, text, icon: Icon }, i) => <Link to="/secteurs" key={title}><span>0{i+1}</span><Icon/><div><h3>{title}</h3><p>{text}</p></div><ArrowRight/></Link>)}</div></section>
 
-    <section className="testimonial" data-reveal><div className="quote-mark">“</div><p className="eyebrow">Notre engagement</p><blockquote>Une défense utile ne se contente pas d’alerter. Elle aide l’organisation à comprendre, décider et continuer.</blockquote><div className="slider-controls"><button aria-label="Précédent"><ArrowLeft/></button><span>01 / 03</span><button aria-label="Suivant"><ArrowRight/></button></div></section>
+    <section className="principle-statement" data-reveal><p className="eyebrow">Notre principe</p><blockquote>Une défense utile ne se contente pas d’alerter. Elle aide l’organisation à comprendre, décider et continuer.</blockquote><Link className="text-link" to="/a-propos">Découvrir notre approche <ArrowRight /></Link></section>
 
     <section className="section wrap" data-reveal><div className="section-heading"><div><p className="eyebrow">Informations du terrain</p><h2>Des repères pour décider.</h2></div><Link className="text-link" to="/veille">Toutes les ressources <ArrowRight size={17} /></Link></div><div className="article-grid ops-cards">{articles.map((a,i) => <article key={a.title}><div className="resource-index">0{i+1}</div><span>{a.date}</span><h3>{a.title}</h3><p>{a.excerpt}</p><Link to="/veille" aria-label={`Lire ${a.title}`}><ArrowRight /></Link></article>)}</div></section>
 
@@ -111,15 +112,30 @@ function Team() {
 }
 
 function Contact() {
-  return <><PageHero eyebrow="Contact" title="Commençons par votre priorité." intro="Décrivez le contexte en quelques lignes. Nous vous recontactons pour qualifier le besoin et la prochaine étape." /><section className="section wrap contact-grid" data-reveal><div className="contact-details"><h2>Parlons sécurité, simplement.</h2><p>Audit, incident, protection ou supervision : indiquez ce qui vous préoccupe et le niveau d’urgence.</p><div><span><MapPin /> Libreville, Gabon</span><span><Clock3 /> Lun–Ven · 08:00–17:00</span><span><Mail /> Adresse e-mail à confirmer</span><span><Phone /> Numéro à confirmer</span></div></div><form className="contact-form" onSubmit={e => e.preventDefault()}><label>Nom complet<input required name="name" placeholder="Votre nom" /></label><label>Adresse e-mail<input required type="email" name="email" placeholder="vous@entreprise.com" /></label><label>Organisation<input name="company" placeholder="Nom de votre organisation" /></label><label>Votre besoin<select name="need" defaultValue=""><option value="" disabled>Sélectionner</option>{pillars.map(p => <option key={p.slug}>{p.title}</option>)}</select></label><label className="full">Message<textarea required name="message" rows="6" placeholder="Contexte, systèmes concernés, urgence…" /></label><button className="button full" type="submit">Préparer la demande <ArrowRight size={18} /></button><small className="full">Formulaire de démonstration — aucun message n’est encore transmis.</small></form></section></>
+  const [status, setStatus] = useState('')
+  const [startedAt] = useState(() => Date.now())
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    const form = event.currentTarget
+    const data = new FormData(form)
+    if (data.get('website') || Date.now() - startedAt < 2500) {
+      setStatus('La demande ne peut pas être préparée. Réessayez dans quelques instants.')
+      return
+    }
+    setStatus('Le formulaire est valide. La transmission sécurisée sera activée avec le backend de production.')
+  }
+
+  return <><PageHero eyebrow="Contact" title="Commençons par votre priorité." intro="Décrivez le contexte en quelques lignes. Nous vous recontactons pour qualifier le besoin et la prochaine étape." /><section className="section wrap contact-grid" data-reveal><div className="contact-details"><h2>Parlons sécurité, simplement.</h2><p>Audit, incident, protection ou supervision : indiquez ce qui vous préoccupe et le niveau d’urgence.</p><div><span><MapPin /> Libreville, Gabon</span><span><Clock3 /> Lun–Ven · 08:00–17:00</span><span><Mail /> Adresse e-mail à confirmer</span><span><Phone /> Numéro à confirmer</span></div></div><form className="contact-form" onSubmit={handleSubmit}><label>Nom complet<input required minLength="2" maxLength="100" autoComplete="name" name="name" placeholder="Votre nom" /></label><label>Adresse e-mail<input required type="email" maxLength="160" autoComplete="email" name="email" placeholder="vous@entreprise.com" /></label><label>Organisation<input maxLength="140" autoComplete="organization" name="company" placeholder="Nom de votre organisation" /></label><label>Votre besoin<select required name="need" defaultValue=""><option value="" disabled>Sélectionner</option>{pillars.map(p => <option key={p.slug} value={p.slug}>{p.title}</option>)}</select></label><label className="full">Message<textarea required minLength="20" maxLength="3000" name="message" rows="6" placeholder="Contexte, systèmes concernés, urgence…" /></label><label className="hp-field" aria-hidden="true">Votre site web<input tabIndex="-1" autoComplete="off" name="website" /></label><label className="consent-field full"><input required type="checkbox" name="privacy" /> <span>J’ai lu la <Link to="/confidentialite">politique de confidentialité</Link> et j’accepte que ma demande soit traitée.</span></label><button className="button full" type="submit">Préparer la demande <ArrowRight size={18} /></button><p className="form-status full" aria-live="polite">{status || 'Formulaire de démonstration — aucune donnée n’est encore transmise.'}</p></form></section></>
 }
 
-function Legal({ privacy = false }) {
-  return <><PageHero eyebrow={privacy ? 'Confidentialité' : 'Informations légales'} title={privacy ? 'Vos données méritent de la clarté.' : 'Mentions légales.'} intro="Cette page sera finalisée avec les informations administratives et l’hébergement validés avant la mise en ligne." /><section className="section wrap legal-copy" data-reveal>{privacy ? <><h2>Données collectées</h2><p>Le futur formulaire pourra collecter les coordonnées et le message transmis volontairement afin de répondre à la demande. La durée de conservation et le responsable de traitement seront précisés avant activation.</p><h2>Vos droits</h2><p>Les modalités d’accès, de rectification et de suppression seront publiées avec une adresse de contact dédiée.</p></> : <><h2>Éditeur</h2><p>CardinalTech — Cybersécurité & Infrastructures. Forme juridique, immatriculation, direction de publication et coordonnées complètes à confirmer.</p><h2>Hébergement</h2><p>Prestataire, adresse et contact à renseigner après choix de l’infrastructure de production.</p></>}</section></>
+function LegalPage({ type }) {
+  const document = legalDocuments[type]
+  return <><PageHero eyebrow={document.eyebrow} title={document.title} intro={document.intro} /><section className="section wrap legal-copy" data-reveal>{document.sections.map(([title, body]) => <section key={title}><h2>{title}</h2><p>{body}</p></section>)}</section></>
 }
 
 function NotFound() { return <section className="not-found grid-bg"><p className="eyebrow">Erreur 404</p><h1>Cette page n’existe pas.</h1><Link className="button" to="/">Retour à l’accueil</Link></section> }
 
 export default function App() {
-  return <Layout><Routes><Route path="/" element={<Home />} /><Route path="/a-propos" element={<About />} /><Route path="/services" element={<Services />} /><Route path="/secteurs" element={<Sectors />} /><Route path="/references" element={<References />} /><Route path="/veille" element={<Watch />} /><Route path="/equipe" element={<Team />} /><Route path="/contact" element={<Contact />} /><Route path="/mentions-legales" element={<Legal />} /><Route path="/confidentialite" element={<Legal privacy />} /><Route path="*" element={<NotFound />} /></Routes></Layout>
+  return <Layout><Routes><Route path="/" element={<Home />} /><Route path="/a-propos" element={<About />} /><Route path="/services" element={<Services />} /><Route path="/secteurs" element={<Sectors />} /><Route path="/references" element={<References />} /><Route path="/veille" element={<Watch />} /><Route path="/equipe" element={<Team />} /><Route path="/contact" element={<Contact />} /><Route path="/mentions-legales" element={<LegalPage type="legal" />} /><Route path="/confidentialite" element={<LegalPage type="privacy" />} /><Route path="/rgpd" element={<LegalPage type="rgpd" />} /><Route path="/conditions-generales" element={<LegalPage type="terms" />} /><Route path="*" element={<NotFound />} /></Routes></Layout>
 }

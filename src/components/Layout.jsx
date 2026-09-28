@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { ArrowUpRight, ChevronRight, Menu, Search, Shield, X } from 'lucide-react'
+import { ArrowUpRight, ChevronRight, Menu, Shield, X } from 'lucide-react'
 import { navItems } from '../data/content'
+import { CookieConsent } from './CookieConsent'
+import { Seo } from './Seo'
 
 function Brand() {
   return (
@@ -27,17 +29,19 @@ export function Layout({ children }) {
   }, [location.pathname])
 
   return <div className="site-shell">
+    <Seo />
+    <a className="skip-link" href="#contenu">Aller au contenu</a>
     <div className="announcement"><span>CardinalTech</span> Votre partenaire local en cybersécurité et infrastructures <ChevronRight size={15} /></div>
-    <div className="utility-bar"><span>Libreville · Gabon</span><div><Link to="/veille">Veille cyber</Link><Link to="/contact">Assistance</Link><button aria-label="Rechercher"><Search size={15} /></button><b>FR</b></div></div>
+    <div className="utility-bar"><span>Libreville · Gabon</span><div><Link to="/veille">Veille cyber</Link><Link to="/contact">Assistance</Link><b>FR</b></div></div>
     <header className="topbar">
       <Brand />
-      <button className="menu-button" aria-label="Ouvrir le menu" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
+      <button className="menu-button" aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
       <nav className={open ? 'nav open' : 'nav'} aria-label="Navigation principale">
         {navItems.map(([label, href]) => <NavLink key={href} to={href}>{label}</NavLink>)}
         <Link className="button small" to="/contact">Demander un audit <ArrowUpRight size={16} /></Link>
       </nav>
     </header>
-    <main>{children}</main>
+    <main id="contenu">{children}</main>
     <footer className="footer">
       <div className="footer-lead">
         <Brand />
@@ -45,9 +49,10 @@ export function Layout({ children }) {
       </div>
       <div><span>Expertises</span><Link to="/services">Audit & protection</Link><Link to="/services">Surveillance & réaction</Link></div>
       <div><span>CardinalTech</span><Link to="/a-propos">À propos</Link><Link to="/equipe">Équipe</Link><Link to="/contact">Contact</Link></div>
-      <div><span>Informations</span><Link to="/mentions-legales">Mentions légales</Link><Link to="/confidentialite">Confidentialité</Link></div>
+      <div><span>Informations</span><Link to="/mentions-legales">Mentions légales</Link><Link to="/conditions-generales">Conditions générales</Link><Link to="/confidentialite">Confidentialité</Link><Link to="/rgpd">Protection des données</Link></div>
       <div className="footer-bottom"><p>© {new Date().getFullYear()} CardinalTech. Tous droits réservés.</p><p>Libreville · Gabon</p></div>
     </footer>
+    <CookieConsent />
   </div>
 }
 

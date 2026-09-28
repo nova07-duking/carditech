@@ -1,0 +1,13 @@
+{
+  "name": "CardinalTech",
+  "short_name": "CardinalTech",
+  "description": "Cybersécurité & Infrastructures",
+  "lang": "fr",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#E5252A",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

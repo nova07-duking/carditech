@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:links": "node scripts/check-links.mjs",
+    "test": "pnpm check:links && pnpm build"
   },
   "dependencies": {
+    "@fontsource/barlow-condensed": "5.2.8",
     "@vitejs/plugin-react": "6.1.1",
     "vite": "8.3.1",
     "react": "19.3.0",

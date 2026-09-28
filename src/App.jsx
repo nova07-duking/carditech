@@ -23,13 +23,31 @@ function CapabilityTabs() {
   const [active, setActive] = useState(0)
   const pillar = pillars[active]
   const Icon = pillar.icon
+
+  function handleTabKeyDown(event, index) {
+    const last = pillars.length - 1
+    const destinations = {
+      ArrowDown: index === last ? 0 : index + 1,
+      ArrowRight: index === last ? 0 : index + 1,
+      ArrowUp: index === 0 ? last : index - 1,
+      ArrowLeft: index === 0 ? last : index - 1,
+      Home: 0,
+      End: last,
+    }
+    const next = destinations[event.key]
+    if (next === undefined) return
+    event.preventDefault()
+    setActive(next)
+    event.currentTarget.parentElement.children[next]?.focus()
+  }
+
   return <div className="capability-tabs">
     <div className="tab-rail" role="tablist" aria-label="Piliers CardinalTech">
-      {pillars.map((item, index) => <button key={item.slug} role="tab" aria-selected={active === index} onClick={() => setActive(index)}><span>0{index + 1}</span>{item.title}<ChevronRight /></button>)}
+      {pillars.map((item, index) => <button key={item.slug} id={`pillar-tab-${item.slug}`} role="tab" aria-controls="pillar-panel" aria-selected={active === index} tabIndex={active === index ? 0 : -1} onClick={() => setActive(index)} onKeyDown={event => handleTabKeyDown(event, index)}><span>0{index + 1}</span>{item.title}<ChevronRight /></button>)}
     </div>
-    <div className="tab-stage" role="tabpanel">
-      <div className="tab-visual"><i/><i/><i/><Icon /></div>
-      <div className="tab-content"><p className="eyebrow">{pillar.eyebrow}</p><h3>{pillar.title}</h3><p>{pillar.summary}</p><ul>{pillar.services.slice(0, 4).map(service => <li key={service}><Check />{service}</li>)}</ul><Link className="button" to={`/services#${pillar.slug}`}>Explorer ce pilier <ArrowRight size={17} /></Link></div>
+    <div className="tab-stage" id="pillar-panel" role="tabpanel" aria-labelledby={`pillar-tab-${pillar.slug}`}>
+      <div className="tab-visual" key={`${pillar.slug}-visual`}><i/><i/><i/><Icon /></div>
+      <div className="tab-content" key={`${pillar.slug}-content`}><p className="eyebrow">{pillar.eyebrow}</p><h3>{pillar.title}</h3><p>{pillar.summary}</p><ul>{pillar.services.slice(0, 4).map(service => <li key={service}><Check />{service}</li>)}</ul><Link className="button" to={`/services#${pillar.slug}`}>Explorer ce pilier <ArrowRight size={17} /></Link></div>
     </div>
   </div>
 }

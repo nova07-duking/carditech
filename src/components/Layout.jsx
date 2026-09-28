@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { ArrowUpRight, Menu, Shield, X } from 'lucide-react'
+import { ArrowUpRight, ChevronRight, Menu, Search, Shield, X } from 'lucide-react'
 import { navItems } from '../data/content'
 
 function Brand() {
@@ -15,9 +15,20 @@ function Brand() {
 export function Layout({ children }) {
   const [open, setOpen] = useState(false)
   const location = useLocation()
-  useEffect(() => { setOpen(false); window.scrollTo({ top: 0, behavior: 'instant' }) }, [location.pathname])
+  useEffect(() => {
+    setOpen(false)
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    const elements = [...document.querySelectorAll('[data-reveal]')]
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => entry.isIntersecting && entry.target.classList.add('is-visible'))
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px' })
+    elements.forEach(element => observer.observe(element))
+    return () => observer.disconnect()
+  }, [location.pathname])
 
   return <div className="site-shell">
+    <div className="announcement"><span>CardinalTech</span> Votre partenaire local en cybersécurité et infrastructures <ChevronRight size={15} /></div>
+    <div className="utility-bar"><span>Libreville · Gabon</span><div><Link to="/veille">Veille cyber</Link><Link to="/contact">Assistance</Link><button aria-label="Rechercher"><Search size={15} /></button><b>FR</b></div></div>
     <header className="topbar">
       <Brand />
       <button className="menu-button" aria-label="Ouvrir le menu" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
@@ -41,9 +52,9 @@ export function Layout({ children }) {
 }
 
 export function PageHero({ eyebrow, title, intro }) {
-  return <section className="page-hero grid-bg"><div className="wrap"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p className="page-intro">{intro}</p></div></section>
+  return <section className="page-hero grid-bg"><div className="wrap page-hero-grid"><div data-reveal><div className="breadcrumbs"><Link to="/">Accueil</Link><ChevronRight size={13} /><span>{eyebrow}</span></div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p className="page-intro">{intro}</p></div><div className="page-orbit" aria-hidden="true"><span className="orbit-ring one"/><span className="orbit-ring two"/><Shield /></div></div></section>
 }
 
 export function CTA() {
-  return <section className="cta-band"><div><p className="eyebrow light">Une question de sécurité ?</p><h2>Transformons le risque en plan d’action.</h2></div><Link className="button light" to="/contact">Parler à un expert <ArrowUpRight size={18} /></Link></section>
+  return <section className="cta-band" data-reveal><div><p className="eyebrow light">Une question de sécurité ?</p><h2>Transformons le risque en plan d’action.</h2></div><Link className="button light" to="/contact">Parler à un expert <ArrowUpRight size={18} /></Link></section>
 }

@@ -1,7 +1,8 @@
+import { useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import {
-  ArrowRight, Check, ChevronRight, Clock3, Crosshair, Mail, MapPin,
-  Phone, Quote, ShieldCheck, Target, UsersRound,
+  ArrowLeft, ArrowRight, Check, ChevronDown, ChevronRight, Clock3, Crosshair, Mail, MapPin,
+  Phone, Quote, ShieldCheck, Sparkles, Target, UsersRound,
 } from 'lucide-react'
 import { CTA, Layout, PageHero } from './components/Layout'
 import { articles, cases, pillars, processSteps, sectors, teamRoles } from './data/content'
@@ -17,68 +18,104 @@ function PillarCards({ detailed = false }) {
   </div>
 }
 
+function CapabilityTabs() {
+  const [active, setActive] = useState(0)
+  const pillar = pillars[active]
+  const Icon = pillar.icon
+  return <div className="capability-tabs">
+    <div className="tab-rail" role="tablist" aria-label="Piliers CardinalTech">
+      {pillars.map((item, index) => <button key={item.slug} role="tab" aria-selected={active === index} onClick={() => setActive(index)}><span>0{index + 1}</span>{item.title}<ChevronRight /></button>)}
+    </div>
+    <div className="tab-stage" role="tabpanel">
+      <div className="tab-visual"><i/><i/><i/><Icon /></div>
+      <div className="tab-content"><p className="eyebrow">{pillar.eyebrow}</p><h3>{pillar.title}</h3><p>{pillar.summary}</p><ul>{pillar.services.slice(0, 4).map(service => <li key={service}><Check />{service}</li>)}</ul><Link className="button" to={`/services#${pillar.slug}`}>Explorer ce pilier <ArrowRight size={17} /></Link></div>
+    </div>
+  </div>
+}
+
+function FAQ() {
+  const items = [
+    ['Pourquoi commencer par un audit ?', 'L’audit donne une vision factuelle des actifs, des faiblesses et des priorités. Il évite d’investir à l’aveugle dans des outils qui ne répondent pas au risque principal.'],
+    ['CardinalTech intervient-il après un incident ?', 'Oui. Le pilier Réaction couvre l’assistance, la récupération de premier niveau, les sauvegardes et la remise en sécurité progressive.'],
+    ['Pouvez-vous superviser une infrastructure existante ?', 'Oui. Nous pouvons déployer une supervision Zabbix et une approche SIEM sans imposer le remplacement complet de l’environnement.'],
+    ['Travaillez-vous avec les PME ?', 'Oui. L’offre est pensée pour être progressive, documentée et proportionnée aux moyens techniques et financiers de chaque organisation.'],
+  ]
+  const [open, setOpen] = useState(0)
+  return <div className="faq-list">{items.map(([q, a], index) => <article className={open === index ? 'open' : ''} key={q}><button onClick={() => setOpen(open === index ? -1 : index)} aria-expanded={open === index}><span>0{index + 1}</span><b>{q}</b><ChevronDown /></button><div className="faq-answer"><p>{a}</p></div></article>)}</div>
+}
+
 function Home() {
   return <>
-    <section className="hero grid-bg">
-      <div className="hero-copy">
+    <section className="ops-hero grid-bg">
+      <div className="hero-streaks" aria-hidden="true" />
+      <img className="ops-hero-mark" src="/images/brand-hero.webp" alt="" aria-hidden="true" />
+      <div className="ops-hero-copy" data-reveal>
         <p className="eyebrow"><span /> Cybersécurité & infrastructures</p>
-        <h1>Prévenir.<br />Protéger.<br /><em>Réagir.</em></h1>
-        <p className="hero-intro">CardinalTech aide les organisations gabonaises à comprendre leurs risques, renforcer leurs systèmes et maintenir leurs activités.</p>
-        <div className="hero-actions"><Link className="button" to="/contact">Demander un audit <ArrowRight size={18} /></Link><Link className="text-link" to="/services">Découvrir nos expertises <ChevronRight size={17} /></Link></div>
-        <div className="hero-proof"><span><b>4</b> piliers complémentaires</span><span><b>360°</b> du risque à la reprise</span><span><b>Local</b> ancrage à Libreville</span></div>
+        <h1>Nous protégeons<br />vos infrastructures<br /><em>critiques.</em></h1>
+        <p>CardinalTech empêche les risques numériques de devenir des interruptions d’activité. Audit, protection, surveillance et réaction réunis dans une approche claire et locale.</p>
+        <div className="hero-actions"><Link className="button" to="/contact">Parler à un expert <ArrowRight size={18} /></Link><Link className="button ghost" to="/services">Explorer nos services</Link></div>
       </div>
-      <div className="hero-art"><div className="hero-glow" /><img src="/images/brand-hero.webp" alt="Emblème rouge et noir CardinalTech" /><span className="status-chip"><i /> Protection active</span></div>
+      <div className="scroll-cue"><span>Découvrir</span><i /></div>
     </section>
 
-    <section className="section wrap"><div className="section-heading"><div><p className="eyebrow">Nos expertises</p><h2>Quatre piliers.<br />Une défense cohérente.</h2></div><p>Une approche continue : voir les faiblesses, réduire l’exposition, surveiller les signaux et agir quand chaque minute compte.</p></div><PillarCards /></section>
+    <section className="capability-intro" data-reveal><article><span>01</span><ShieldCheck/><h3>Protection intégrée</h3><p>Des contrôles cohérents pour les systèmes, réseaux, applications et données.</p><Link to="/services">Découvrir <ArrowRight/></Link></article><article><span>02</span><Sparkles/><h3>Visibilité opérationnelle</h3><p>Des alertes exploitables et une supervision qui reste lisible par vos équipes.</p><Link to="/services">Découvrir <ArrowRight/></Link></article><article><span>03</span><UsersRound/><h3>Expertise locale</h3><p>Un accompagnement proche du terrain, documenté et adapté à votre maturité.</p><Link to="/a-propos">Nous connaître <ArrowRight/></Link></article></section>
 
-    <section className="split-section">
+    <section className="metric-band"><div><b>4</b><span>piliers complémentaires</span></div><div><b>360°</b><span>du diagnostic à la reprise</span></div><div><b>24/7</b><span>une sécurité pensée en continu</span></div><div><b>+1</b><span>partenaire local à Libreville</span></div></section>
+
+    <section className="section wrap" data-reveal><div className="section-heading"><div><p className="eyebrow">Notre plateforme de services</p><h2>Analyser. Protéger.<br />Surveiller. Réagir.</h2></div><p>Une architecture d’intervention inspirée des environnements critiques : chaque pilier renforce le suivant et produit des résultats mesurables.</p></div><CapabilityTabs /></section>
+
+    <section className="split-section" data-reveal>
       <div className="image-panel"><img src="/images/cardinaltech-building.webp" alt="Projection de l’identité CardinalTech sur un bâtiment" /><span>Une expertise proche du terrain</span></div>
-      <div className="split-copy"><p className="eyebrow">Notre conviction</p><h2>La cybersécurité doit rester compréhensible.</h2><p>Nous transformons les constats techniques en décisions claires. Chaque recommandation répond à un risque, une priorité et un résultat attendu.</p><div className="mini-list"><span><Crosshair /> Recommandations priorisées</span><span><ShieldCheck /> Défenses adaptées à l’existant</span><span><UsersRound /> Transfert de compétences</span></div><Link className="text-link" to="/a-propos">Comprendre notre approche <ArrowRight size={17} /></Link></div>
+      <div className="split-copy"><p className="eyebrow">L’avantage CardinalTech</p><h2>La cybersécurité doit rester compréhensible.</h2><p>Nous transformons les constats techniques en décisions claires. Chaque recommandation répond à un risque, une priorité et un résultat attendu.</p><div className="mini-list"><span><Crosshair /> Recommandations priorisées</span><span><ShieldCheck /> Défenses adaptées à l’existant</span><span><UsersRound /> Transfert de compétences</span></div><Link className="button ghost" to="/a-propos">Comprendre notre approche <ArrowRight size={17} /></Link></div>
     </section>
 
-    <section className="section wrap"><div className="section-heading"><div><p className="eyebrow">Notre méthode</p><h2>De la visibilité à la maîtrise.</h2></div></div><div className="process">{processSteps.map(([n, title, text]) => <div key={n}><span>{n}</span><h3>{title}</h3><p>{text}</p></div>)}</div></section>
+    <section className="section wrap" data-reveal><div className="section-heading"><div><p className="eyebrow">Notre méthode</p><h2>De la visibilité à la maîtrise.</h2></div></div><div className="process">{processSteps.map(([n, title, text]) => <div key={n}><span>{n}</span><h3>{title}</h3><p>{text}</p></div>)}</div></section>
 
-    <section className="section wrap dark-panel"><div className="section-heading"><div><p className="eyebrow">Secteurs</p><h2>Des enjeux différents.<br />Une exigence constante.</h2></div><Link className="text-link" to="/secteurs">Voir les secteurs <ArrowRight size={17} /></Link></div><div className="sector-grid">{sectors.map(({ title, text, icon: Icon }) => <article key={title}><Icon /><h3>{title}</h3><p>{text}</p></article>)}</div></section>
+    <section className="industry-showcase" data-reveal><div className="industry-copy"><p className="eyebrow">Secteurs critiques</p><h2>Protéger les organisations qui font avancer le pays.</h2><p>PME. Administrations. Banques. Infrastructures. Les contextes changent, l’exigence de continuité reste la même.</p><Link className="button" to="/secteurs">Explorer les secteurs <ArrowRight/></Link></div><div className="industry-list">{sectors.map(({ title, text, icon: Icon }, i) => <Link to="/secteurs" key={title}><span>0{i+1}</span><Icon/><div><h3>{title}</h3><p>{text}</p></div><ArrowRight/></Link>)}</div></section>
 
-    <section className="section wrap"><div className="section-heading"><div><p className="eyebrow">Veille cyber</p><h2>Des repères pour décider.</h2></div><Link className="text-link" to="/veille">Toute la veille <ArrowRight size={17} /></Link></div><div className="article-grid">{articles.map(a => <article key={a.title}><span>{a.date}</span><h3>{a.title}</h3><p>{a.excerpt}</p><Link to="/veille" aria-label={`Lire ${a.title}`}><ArrowRight /></Link></article>)}</div></section>
+    <section className="testimonial" data-reveal><div className="quote-mark">“</div><p className="eyebrow">Notre engagement</p><blockquote>Une défense utile ne se contente pas d’alerter. Elle aide l’organisation à comprendre, décider et continuer.</blockquote><div className="slider-controls"><button aria-label="Précédent"><ArrowLeft/></button><span>01 / 03</span><button aria-label="Suivant"><ArrowRight/></button></div></section>
+
+    <section className="section wrap" data-reveal><div className="section-heading"><div><p className="eyebrow">Informations du terrain</p><h2>Des repères pour décider.</h2></div><Link className="text-link" to="/veille">Toutes les ressources <ArrowRight size={17} /></Link></div><div className="article-grid ops-cards">{articles.map((a,i) => <article key={a.title}><div className="resource-index">0{i+1}</div><span>{a.date}</span><h3>{a.title}</h3><p>{a.excerpt}</p><Link to="/veille" aria-label={`Lire ${a.title}`}><ArrowRight /></Link></article>)}</div></section>
+
+    <section className="section wrap faq-section" data-reveal><div><p className="eyebrow">Questions fréquentes</p><h2>Ce qu’il faut savoir avant de commencer.</h2></div><FAQ /></section>
     <CTA />
   </>
 }
 
 function About() {
   return <><PageHero eyebrow="À propos" title="Une cybersécurité ancrée dans le réel." intro="CardinalTech accompagne les organisations dans la protection de leurs systèmes, de leurs données et de leur continuité d’activité." />
-    <section className="section wrap story-grid"><div><p className="eyebrow">Notre mission</p><h2>Rendre la sécurité actionnable.</h2></div><div><p>Nous rapprochons expertise technique et réalités opérationnelles. Notre rôle n’est pas d’ajouter de la complexité, mais de rendre les risques visibles et les réponses possibles.</p><p>Depuis Libreville, nous construisons une relation de proximité fondée sur la précision, la transparence et la transmission.</p></div></section>
-    <section className="values"><article><Target /><span>01</span><h3>Précision</h3><p>Des constats vérifiables et des priorités explicites.</p></article><article><ShieldCheck /><span>02</span><h3>Responsabilité</h3><p>La sécurité pensée pour durer, pas pour impressionner.</p></article><article><UsersRound /><span>03</span><h3>Proximité</h3><p>Une équipe accessible qui comprend votre contexte.</p></article></section>
-    <section className="section wrap quote-block"><Quote /><blockquote>La confiance numérique se construit avant l’incident — et se mesure dans la capacité à y répondre.</blockquote></section><CTA /></>
+    <section className="section wrap story-grid" data-reveal><div><p className="eyebrow">Notre mission</p><h2>Rendre la sécurité actionnable.</h2></div><div><p>Nous rapprochons expertise technique et réalités opérationnelles. Notre rôle n’est pas d’ajouter de la complexité, mais de rendre les risques visibles et les réponses possibles.</p><p>Depuis Libreville, nous construisons une relation de proximité fondée sur la précision, la transparence et la transmission.</p></div></section>
+    <section className="values" data-reveal><article><Target /><span>01</span><h3>Précision</h3><p>Des constats vérifiables et des priorités explicites.</p></article><article><ShieldCheck /><span>02</span><h3>Responsabilité</h3><p>La sécurité pensée pour durer, pas pour impressionner.</p></article><article><UsersRound /><span>03</span><h3>Proximité</h3><p>Une équipe accessible qui comprend votre contexte.</p></article></section>
+    <section className="metric-band" data-reveal><div><b>Local</b><span>une présence à Libreville</span></div><div><b>4</b><span>piliers de défense</span></div><div><b>Clair</b><span>des décisions explicables</span></div><div><b>Durable</b><span>des solutions maintenables</span></div></section>
+    <section className="section wrap quote-block" data-reveal><Quote /><blockquote>La confiance numérique se construit avant l’incident — et se mesure dans la capacité à y répondre.</blockquote></section><CTA /></>
 }
 
 function Services() {
-  return <><PageHero eyebrow="Services" title="Du diagnostic à la continuité." intro="Une offre structurée autour de quatre piliers pour sécuriser l’ensemble du cycle de risque." /><section className="section wrap"><PillarCards detailed /></section><CTA /></>
+  return <><PageHero eyebrow="Services" title="Du diagnostic à la continuité." intro="Une offre structurée autour de quatre piliers pour sécuriser l’ensemble du cycle de risque." /><section className="metric-band" data-reveal><div><b>01</b><span>identifier les risques</span></div><div><b>02</b><span>réduire l’exposition</span></div><div><b>03</b><span>détecter les écarts</span></div><div><b>04</b><span>restaurer l’activité</span></div></section><section className="section wrap" data-reveal><PillarCards detailed /></section><CTA /></>
 }
 
 function Sectors() {
-  return <><PageHero eyebrow="Secteurs" title="Protéger ce qui fait fonctionner votre organisation." intro="Nous adaptons la méthode aux contraintes, aux équipes et au niveau de maturité de chaque structure." /><section className="section wrap"><div className="sector-grid large">{sectors.map(({ title, text, icon: Icon }, i) => <article key={title}><span>0{i+1}</span><Icon /><h2>{title}</h2><p>{text}</p><ul><li>Analyse du contexte</li><li>Priorisation des actifs critiques</li><li>Plan d’amélioration progressif</li></ul></article>)}</div></section><CTA /></>
+  return <><PageHero eyebrow="Secteurs" title="Protéger ce qui fait fonctionner votre organisation." intro="Nous adaptons la méthode aux contraintes, aux équipes et au niveau de maturité de chaque structure." /><section className="section wrap" data-reveal><div className="sector-grid large">{sectors.map(({ title, text, icon: Icon }, i) => <article key={title}><span>0{i+1}</span><Icon /><h2>{title}</h2><p>{text}</p><ul><li>Analyse du contexte</li><li>Priorisation des actifs critiques</li><li>Plan d’amélioration progressif</li></ul></article>)}</div></section><CTA /></>
 }
 
 function References() {
-  return <><PageHero eyebrow="Références" title="La méthode avant la promesse." intro="Quelques scénarios d’intervention représentatifs. Les informations clients restent confidentielles." /><section className="section wrap"><div className="case-grid">{cases.map(({ tag, title, text, icon: Icon }, i) => <article key={title}><div><Icon /><span>{tag}</span></div><p className="case-number">CAS 0{i+1}</p><h2>{title}</h2><p>{text}</p><small>Scénario anonymisé</small></article>)}</div></section><CTA /></>
+  return <><PageHero eyebrow="Références" title="La méthode avant la promesse." intro="Quelques scénarios d’intervention représentatifs. Les informations clients restent confidentielles." /><section className="section wrap" data-reveal><div className="case-grid">{cases.map(({ tag, title, text, icon: Icon }, i) => <article key={title}><div><Icon /><span>{tag}</span></div><p className="case-number">CAS 0{i+1}</p><h2>{title}</h2><p>{text}</p><small>Scénario anonymisé</small></article>)}</div></section><CTA /></>
 }
 
 function Watch() {
-  return <><PageHero eyebrow="Blog & veille" title="Comprendre pour mieux protéger." intro="Des contenus courts et utiles pour améliorer les décisions de sécurité au quotidien." /><section className="section wrap"><div className="article-grid featured">{articles.map((a, i) => <article key={a.title}><span>{a.date} · Lecture {3+i} min</span><h2>{a.title}</h2><p>{a.excerpt}</p><button className="text-link" type="button">Article prochainement disponible <ArrowRight size={17} /></button></article>)}</div></section><CTA /></>
+  return <><PageHero eyebrow="Blog & veille" title="Comprendre pour mieux protéger." intro="Des contenus courts et utiles pour améliorer les décisions de sécurité au quotidien." /><section className="resource-filter" data-reveal><button className="active">Tous</button><button>Audit</button><button>Protection</button><button>Surveillance</button><button>Réaction</button></section><section className="section wrap" data-reveal><div className="article-grid featured">{articles.map((a, i) => <article key={a.title}><span>{a.date} · Lecture {3+i} min</span><h2>{a.title}</h2><p>{a.excerpt}</p><button className="text-link" type="button">Article prochainement disponible <ArrowRight size={17} /></button></article>)}</div></section><CTA /></>
 }
 
 function Team() {
-  return <><PageHero eyebrow="Équipe" title="Des expertises qui travaillent ensemble." intro="La cybersécurité exige des regards complémentaires : gouvernance, systèmes, réseaux, développement et accompagnement." /><section className="section wrap"><div className="team-intro"><div><p className="eyebrow">Organisation</p><h2>Une équipe conçue autour de vos enjeux.</h2></div><p>Les profils nominatifs et portraits seront publiés après validation. La structure ci-dessous présente les fonctions mobilisées selon les missions.</p></div><div className="team-grid">{teamRoles.map(([role, text], i) => <article key={role}><span>0{i+1}</span><div className="avatar-placeholder">CT</div><h3>{role}</h3><p>{text}</p></article>)}</div></section><CTA /></>
+  return <><PageHero eyebrow="Équipe" title="Des expertises qui travaillent ensemble." intro="La cybersécurité exige des regards complémentaires : gouvernance, systèmes, réseaux, développement et accompagnement." /><section className="section wrap" data-reveal><div className="team-intro"><div><p className="eyebrow">Organisation</p><h2>Une équipe conçue autour de vos enjeux.</h2></div><p>Les profils nominatifs et portraits seront publiés après validation. La structure ci-dessous présente les fonctions mobilisées selon les missions.</p></div><div className="team-grid">{teamRoles.map(([role, text], i) => <article key={role}><span>0{i+1}</span><div className="avatar-placeholder">CT</div><h3>{role}</h3><p>{text}</p></article>)}</div></section><CTA /></>
 }
 
 function Contact() {
-  return <><PageHero eyebrow="Contact" title="Commençons par votre priorité." intro="Décrivez le contexte en quelques lignes. Nous vous recontactons pour qualifier le besoin et la prochaine étape." /><section className="section wrap contact-grid"><div className="contact-details"><h2>Parlons sécurité, simplement.</h2><p>Audit, incident, protection ou supervision : indiquez ce qui vous préoccupe et le niveau d’urgence.</p><div><span><MapPin /> Libreville, Gabon</span><span><Clock3 /> Lun–Ven · 08:00–17:00</span><span><Mail /> Adresse e-mail à confirmer</span><span><Phone /> Numéro à confirmer</span></div></div><form className="contact-form" onSubmit={e => e.preventDefault()}><label>Nom complet<input required name="name" placeholder="Votre nom" /></label><label>Adresse e-mail<input required type="email" name="email" placeholder="vous@entreprise.com" /></label><label>Organisation<input name="company" placeholder="Nom de votre organisation" /></label><label>Votre besoin<select name="need" defaultValue=""><option value="" disabled>Sélectionner</option>{pillars.map(p => <option key={p.slug}>{p.title}</option>)}</select></label><label className="full">Message<textarea required name="message" rows="6" placeholder="Contexte, systèmes concernés, urgence…" /></label><button className="button full" type="submit">Préparer la demande <ArrowRight size={18} /></button><small className="full">Formulaire de démonstration — aucun message n’est encore transmis.</small></form></section></>
+  return <><PageHero eyebrow="Contact" title="Commençons par votre priorité." intro="Décrivez le contexte en quelques lignes. Nous vous recontactons pour qualifier le besoin et la prochaine étape." /><section className="section wrap contact-grid" data-reveal><div className="contact-details"><h2>Parlons sécurité, simplement.</h2><p>Audit, incident, protection ou supervision : indiquez ce qui vous préoccupe et le niveau d’urgence.</p><div><span><MapPin /> Libreville, Gabon</span><span><Clock3 /> Lun–Ven · 08:00–17:00</span><span><Mail /> Adresse e-mail à confirmer</span><span><Phone /> Numéro à confirmer</span></div></div><form className="contact-form" onSubmit={e => e.preventDefault()}><label>Nom complet<input required name="name" placeholder="Votre nom" /></label><label>Adresse e-mail<input required type="email" name="email" placeholder="vous@entreprise.com" /></label><label>Organisation<input name="company" placeholder="Nom de votre organisation" /></label><label>Votre besoin<select name="need" defaultValue=""><option value="" disabled>Sélectionner</option>{pillars.map(p => <option key={p.slug}>{p.title}</option>)}</select></label><label className="full">Message<textarea required name="message" rows="6" placeholder="Contexte, systèmes concernés, urgence…" /></label><button className="button full" type="submit">Préparer la demande <ArrowRight size={18} /></button><small className="full">Formulaire de démonstration — aucun message n’est encore transmis.</small></form></section></>
 }
 
 function Legal({ privacy = false }) {
-  return <><PageHero eyebrow={privacy ? 'Confidentialité' : 'Informations légales'} title={privacy ? 'Vos données méritent de la clarté.' : 'Mentions légales.'} intro="Cette page sera finalisée avec les informations administratives et l’hébergement validés avant la mise en ligne." /><section className="section wrap legal-copy">{privacy ? <><h2>Données collectées</h2><p>Le futur formulaire pourra collecter les coordonnées et le message transmis volontairement afin de répondre à la demande. La durée de conservation et le responsable de traitement seront précisés avant activation.</p><h2>Vos droits</h2><p>Les modalités d’accès, de rectification et de suppression seront publiées avec une adresse de contact dédiée.</p></> : <><h2>Éditeur</h2><p>CardinalTech — Cybersécurité & Infrastructures. Forme juridique, immatriculation, direction de publication et coordonnées complètes à confirmer.</p><h2>Hébergement</h2><p>Prestataire, adresse et contact à renseigner après choix de l’infrastructure de production.</p></>}</section></>
+  return <><PageHero eyebrow={privacy ? 'Confidentialité' : 'Informations légales'} title={privacy ? 'Vos données méritent de la clarté.' : 'Mentions légales.'} intro="Cette page sera finalisée avec les informations administratives et l’hébergement validés avant la mise en ligne." /><section className="section wrap legal-copy" data-reveal>{privacy ? <><h2>Données collectées</h2><p>Le futur formulaire pourra collecter les coordonnées et le message transmis volontairement afin de répondre à la demande. La durée de conservation et le responsable de traitement seront précisés avant activation.</p><h2>Vos droits</h2><p>Les modalités d’accès, de rectification et de suppression seront publiées avec une adresse de contact dédiée.</p></> : <><h2>Éditeur</h2><p>CardinalTech — Cybersécurité & Infrastructures. Forme juridique, immatriculation, direction de publication et coordonnées complètes à confirmer.</p><h2>Hébergement</h2><p>Prestataire, adresse et contact à renseigner après choix de l’infrastructure de production.</p></>}</section></>
 }
 
 function NotFound() { return <section className="not-found grid-bg"><p className="eyebrow">Erreur 404</p><h1>Cette page n’existe pas.</h1><Link className="button" to="/">Retour à l’accueil</Link></section> }

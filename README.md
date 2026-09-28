@@ -24,6 +24,8 @@ pnpm test
 
 Elle vérifie les liens et ressources internes avant de compiler la version de production.
 
+La politique et la matrice des contrôles sont documentées dans [`SECURITY.md`](SECURITY.md). La CI audite aussi les vulnérabilités connues des dépendances et les mises à jour sont surveillées par Dependabot.
+
 ## Mise en production
 
 - Le site contient les règles de réécriture SPA pour Netlify (`public/_redirects`) et Vercel (`vercel.json`).

@@ -8,16 +8,16 @@
     "build": "vite build",
     "preview": "vite preview",
     "check:links": "node scripts/check-links.mjs",
-    "test": "pnpm check:links && pnpm build"
+    "check:security": "node scripts/security-check.mjs",
+    "test": "pnpm check:links && pnpm check:security && pnpm build"
   },
   "dependencies": {
-    "@fontsource/barlow-condensed": "5.2.8",
+    "@fontsource/barlow-condensed": "5.3.0",
     "@vitejs/plugin-react": "6.1.1",
-    "vite": "8.3.1",
+    "lucide-react": "1.48.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-router-dom": "7.18.4",
-    "lucide-react": "1.48.0"
-  },
-  "devDependencies": {}
+    "vite": "8.3.1"
+  }
 }

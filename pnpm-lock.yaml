@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@fontsource/barlow-condensed':
-        specifier: 5.2.8
-        version: 5.2.8
+        specifier: 5.3.0
+        version: 5.3.0
       '@vitejs/plugin-react':
         specifier: 6.1.1
         version: 6.1.1(vite@8.3.1)
@@ -32,8 +32,8 @@ importers:
 
 packages:
 
-  '@fontsource/barlow-condensed@5.2.8':
-    resolution: {integrity: sha512-cmCWNfh7oCmfarGDlhiJRkl4HOgt9aOqki7IYtDOaI3qLCeEO/8VjiZeAx/2PEPf4K36YxXDjAlOWwW/anQUZA==}
+  '@fontsource/barlow-condensed@5.3.0':
+    resolution: {integrity: sha512-RA7MmIx0v3eQ6Gcf74qLVLOwLB0GpPOzx+eU9iG/AmCnSJGcIWYeU8y6CEMGZ210MGwGg5CZhzLkkvyZdTTk1g==}
 
   '@oxc-project/types@0.151.0':
     resolution: {integrity: sha512-J1yXrIlNDZVzE3ada310xeAw7nH8yCAyLPuUIsjKatFPmfn5bS1oW+cM+QsGOtVWd5nhSpbwZWx/rue+r5Z+PA==}
@@ -360,7 +360,7 @@ packages:
 
 snapshots:
 
-  '@fontsource/barlow-condensed@5.2.8': {}
+  '@fontsource/barlow-condensed@5.3.0': {}
 
   '@oxc-project/types@0.151.0': {}
 

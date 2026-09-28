@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import {
-  ArrowRight, Check, ChevronDown, ChevronRight, Clock3, Crosshair, Mail, MapPin,
-  Phone, Quote, ShieldCheck, Sparkles, Target, UsersRound,
+  ArrowRight, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Crosshair, Mail, MapPin,
+  Phone, Quote, ShieldCheck, Sparkles, Target, UsersRound, X,
 } from 'lucide-react'
 import { CTA, Layout, PageHero } from './components/Layout'
 import { legalDocuments } from './config/site'
@@ -102,7 +102,7 @@ function Home() {
 }
 
 function About() {
-  return <><PageHero eyebrow="À propos" title="Une cybersécurité ancrée dans le réel." intro="CardinalTech accompagne les organisations dans la protection de leurs systèmes, de leurs données et de leur continuité d’activité." />
+  return <><section className="about-hero grid-bg"><div className="about-hero-copy" data-reveal><p className="eyebrow">À propos de CardinalTech</p><h1>Une cybersécurité ancrée dans le réel.</h1><p>CardinalTech accompagne les organisations dans la protection de leurs systèmes, de leurs données et de leur continuité d’activité.</p></div><figure className="about-hero-media" data-reveal><img src="/images/cardinaltech-building.webp" alt="Identité CardinalTech présentée sur un bâtiment" /><figcaption>Libreville · Expertise de proximité</figcaption></figure></section>
     <section className="section wrap story-grid" data-reveal><div><p className="eyebrow">Notre mission</p><h2>Rendre la sécurité actionnable.</h2></div><div><p>Nous rapprochons expertise technique et réalités opérationnelles. Notre rôle n’est pas d’ajouter de la complexité, mais de rendre les risques visibles et les réponses possibles.</p><p>Depuis Libreville, nous construisons une relation de proximité fondée sur la précision, la transparence et la transmission.</p></div></section>
     <section className="values" data-reveal><article><Target /><span>01</span><h3>Précision</h3><p>Des constats vérifiables et des priorités explicites.</p></article><article><ShieldCheck /><span>02</span><h3>Responsabilité</h3><p>La sécurité pensée pour durer, pas pour impressionner.</p></article><article><UsersRound /><span>03</span><h3>Proximité</h3><p>Une équipe accessible qui comprend votre contexte.</p></article></section>
     <section className="metric-band" data-reveal><div><b>Local</b><span>une présence à Libreville</span></div><div><b>4</b><span>piliers de défense</span></div><div><b>Clair</b><span>des décisions explicables</span></div><div><b>Durable</b><span>des solutions maintenables</span></div></section>
@@ -125,8 +125,30 @@ function Watch() {
   return <><PageHero eyebrow="Blog & veille" title="Comprendre pour mieux protéger." intro="Des contenus courts et utiles pour améliorer les décisions de sécurité au quotidien." /><section className="resource-filter" data-reveal><button className="active">Tous</button><button>Audit</button><button>Protection</button><button>Surveillance</button><button>Réaction</button></section><section className="section wrap" data-reveal><div className="article-grid featured">{articles.map((a, i) => <article key={a.title}><span>{a.date} · Lecture {3+i} min</span><h2>{a.title}</h2><p>{a.excerpt}</p><button className="text-link" type="button">Article prochainement disponible <ArrowRight size={17} /></button></article>)}</div></section><CTA /></>
 }
 
+function TeamProfileDialog({ index, onClose, onNavigate }) {
+  const dialogRef = useRef(null)
+  const profile = teamRoles[index]
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog?.open) dialog?.showModal()
+    return () => { if (dialog?.open) dialog.close() }
+  }, [])
+
+  return <dialog className="profile-dialog" ref={dialogRef} onCancel={event => { event.preventDefault(); onClose() }} onClick={event => { if (event.target === event.currentTarget) onClose() }}>
+    <div className="profile-dialog-inner">
+      <button className="profile-close" type="button" aria-label="Fermer la fiche" onClick={onClose}><X /></button>
+      <button className="profile-nav previous" type="button" aria-label="Rôle précédent" onClick={() => onNavigate(index === 0 ? teamRoles.length - 1 : index - 1)}><ChevronLeft /></button>
+      <div className="profile-copy"><p className="eyebrow">Pôle 0{index + 1}</p><h2>{profile.role}</h2><p>{profile.description}</p><ul>{profile.responsibilities.map(item => <li key={item}><Check />{item}</li>)}</ul></div>
+      <div className="profile-mark" aria-hidden="true"><span>CT</span><b>0{index + 1}</b></div>
+      <button className="profile-nav next" type="button" aria-label="Rôle suivant" onClick={() => onNavigate(index === teamRoles.length - 1 ? 0 : index + 1)}><ChevronRight /></button>
+    </div>
+  </dialog>
+}
+
 function Team() {
-  return <><PageHero eyebrow="Équipe" title="Des expertises qui travaillent ensemble." intro="La cybersécurité exige des regards complémentaires : gouvernance, systèmes, réseaux, développement et accompagnement." /><section className="section wrap" data-reveal><div className="team-intro"><div><p className="eyebrow">Organisation</p><h2>Une équipe conçue autour de vos enjeux.</h2></div><p>Les profils nominatifs et portraits seront publiés après validation. La structure ci-dessous présente les fonctions mobilisées selon les missions.</p></div><div className="team-grid">{teamRoles.map(([role, text], i) => <article key={role}><span>0{i+1}</span><div className="avatar-placeholder">CT</div><h3>{role}</h3><p>{text}</p></article>)}</div></section><CTA /></>
+  const [selectedProfile, setSelectedProfile] = useState(null)
+  return <><PageHero eyebrow="Équipe" title="Des expertises qui travaillent ensemble." intro="La cybersécurité exige des regards complémentaires : gouvernance, systèmes, réseaux, développement et accompagnement." /><section className="section wrap" data-reveal><div className="team-intro"><div><p className="eyebrow">Organisation</p><h2>Une équipe conçue autour de vos enjeux.</h2></div><p>Les profils nominatifs et portraits seront publiés après validation. Nous présentons ici, sans inventer de biographies, les fonctions réellement mobilisées selon les missions.</p></div><div className="team-grid">{teamRoles.map(({ role, summary }, i) => <article key={role}><button type="button" onClick={() => setSelectedProfile(i)} aria-label={`Découvrir le pôle ${role}`}><span>0{i+1}</span><div className="role-mark">CT</div><h3>{role}</h3><p>{summary}</p><b>Voir le rôle <ArrowRight /></b></button></article>)}</div></section>{selectedProfile !== null && <TeamProfileDialog index={selectedProfile} onClose={() => setSelectedProfile(null)} onNavigate={setSelectedProfile} />}<CTA /></>
 }
 
 function Contact() {

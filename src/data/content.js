@@ -70,10 +70,30 @@ export const navItems = [
 ]
 
 export const teamRoles = [
-  ['Direction', 'Vision, gouvernance et relation de confiance.'],
-  ['Sécurité', 'Audit, tests, détection et réponse.'],
-  ['Systèmes & réseaux', 'Durcissement, disponibilité et supervision.'],
-  ['Développement', 'Automatisation et outils internes.'],
+  {
+    role: 'Direction',
+    summary: 'Vision, gouvernance et relation de confiance.',
+    description: 'La direction transforme les enjeux métiers en priorités de sécurité compréhensibles. Elle garantit le cadrage des missions, la confidentialité des échanges et la cohérence des décisions.',
+    responsibilities: ['Cadrage et gouvernance', 'Relation de confiance', 'Pilotage des engagements'],
+  },
+  {
+    role: 'Sécurité',
+    summary: 'Audit, tests, détection et réponse.',
+    description: 'Le pôle sécurité identifie les expositions, qualifie les risques et construit des recommandations vérifiables. Il intervient également pour la détection et la réponse de premier niveau.',
+    responsibilities: ['Audits techniques', 'Analyse des risques', 'Détection et réaction'],
+  },
+  {
+    role: 'Systèmes & réseaux',
+    summary: 'Durcissement, disponibilité et supervision.',
+    description: 'Ce pôle relie la sécurité aux réalités de l’infrastructure : serveurs, réseaux, sauvegardes et services critiques. Chaque évolution tient compte de la continuité d’activité.',
+    responsibilities: ['Durcissement', 'Supervision', 'Continuité des services'],
+  },
+  {
+    role: 'Développement',
+    summary: 'Automatisation et outils internes.',
+    description: 'Le développement automatise les contrôles répétitifs et crée les outils nécessaires au suivi. L’objectif reste une sécurité maintenable, traçable et adaptée aux équipes.',
+    responsibilities: ['Automatisation', 'Intégration sécurisée', 'Outils de suivi'],
+  },
 ]
 
 export { Wifi }
